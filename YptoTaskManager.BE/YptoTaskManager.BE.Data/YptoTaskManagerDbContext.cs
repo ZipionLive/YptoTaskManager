@@ -1,0 +1,21 @@
+﻿using Microsoft.EntityFrameworkCore;
+using YptoTaskManager.BE.Domain.Entities;
+
+namespace YptoTaskManager.BE.Data
+{
+    public class YptoTaskManagerDbContext : DbContext
+    {
+        public YptoTaskManagerDbContext(DbContextOptions<YptoTaskManagerDbContext> options) : base(options) { }
+
+        public DbSet<User> Users => Set<User>();
+        public DbSet<TaskItem> Tasks => Set<TaskItem>();
+        public DbSet<TaskItemStatus> TaskStatuses => Set<TaskItemStatus>();
+        public DbSet<TaskItemType> TaskItemTypes => Set<TaskItemType>();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(YptoTaskManagerDbContext).Assembly);
+        }
+    }
+}

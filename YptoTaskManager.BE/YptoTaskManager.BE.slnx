@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="YptoTaskManager.BE.API/YptoTaskManager.BE.API.csproj" />
+  <Project Path="YptoTaskManager.BE.Business/YptoTaskManager.BE.Business.csproj" Id="9cf5e3d1-49cd-45bb-a115-8bd63c9738d1" />
+  <Project Path="YptoTaskManager.BE.Data/YptoTaskManager.BE.Data.csproj" Id="845df5a8-42cb-4419-92a9-47ba9f6d4e56" />
+  <Project Path="YptoTaskManager.BE.Domain/YptoTaskManager.BE.Domain.csproj" Id="d043b87a-5578-4fa8-87cc-39dc70820172" />
+  <Project Path="YptoTaskManager.BE.IBusiness/YptoTaskManager.BE.IBusiness.csproj" Id="230cd3ef-2782-4f37-866f-31ee789719e3" />
+  <Project Path="YptoTaskManager.BE.IData/YptoTaskManager.BE.IData.csproj" Id="72881953-a738-4c03-9f3b-9622d42cb05d" />
+  <Project Path="YptoTaskManager.BE.Migrations/YptoTaskManager.BE.Migrations.csproj" />
+</Solution>

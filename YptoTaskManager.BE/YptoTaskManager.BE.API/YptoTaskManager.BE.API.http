@@ -1,0 +1,6 @@
+@YptoTaskManager.BE.API_HostAddress = http://localhost:8888
+
+GET {{YptoTaskManager.BE.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
