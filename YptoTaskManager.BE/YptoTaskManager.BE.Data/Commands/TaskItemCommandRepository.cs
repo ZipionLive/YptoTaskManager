@@ -24,6 +24,7 @@ public class TaskItemCommandRepository : ITaskItemCommandRepository
 
     public void Delete(TaskItem taskItem)
     {
-        _context.TaskItems.Remove(taskItem);
+        taskItem.DeletedOn = DateTime.Now;
+        _context.TaskItems.Update(taskItem);
     }
 }
