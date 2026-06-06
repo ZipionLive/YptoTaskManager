@@ -21,10 +21,4 @@ public class TaskItemCommandRepository : ITaskItemCommandRepository
     {
         _context.TaskItems.Update(taskItem);
     }
-
-    public void Delete(TaskItem taskItem)
-    {
-        taskItem.DeletedOn = DateTime.Now;
-        _context.TaskItems.Update(taskItem);
-    }
 }

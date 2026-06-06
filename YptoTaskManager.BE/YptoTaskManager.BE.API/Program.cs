@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using YptoTaskManager.BE.Business;
 using YptoTaskManager.BE.Data;
 using YptoTaskManager.BE.Data.Commands;
 using YptoTaskManager.BE.Data.Queries;
+using YptoTaskManager.BE.IBusiness;
 using YptoTaskManager.BE.IData;
 using YptoTaskManager.BE.IData.Commands;
 using YptoTaskManager.BE.IData.Queries;
@@ -46,6 +48,9 @@ namespace YptoTaskManager.BE.API
 
             builder.Services.AddScoped<ITaskItemCommandRepository, TaskItemCommandRepository>();
             builder.Services.AddScoped<IUserCommandRepository, UserCommandRepository>();
+
+            builder.Services.AddScoped<ITaskItemService, TaskItemService>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             var app = builder.Build();
 

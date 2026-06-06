@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\YptoTaskManager.BE.Business\YptoTaskManager.BE.Business.csproj" />
     <ProjectReference Include="..\YptoTaskManager.BE.Data\YptoTaskManager.BE.Data.csproj" />
+    <ProjectReference Include="..\YptoTaskManager.BE.IBusiness\YptoTaskManager.BE.IBusiness.csproj" />
     <ProjectReference Include="..\YptoTaskManager.BE.Migrations\YptoTaskManager.BE.Migrations.csproj" />
   </ItemGroup>
 
