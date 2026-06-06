@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using YptoTaskManager.BE.Data;
+using YptoTaskManager.BE.Data.Queries;
+using YptoTaskManager.BE.IData;
+using YptoTaskManager.BE.IData.Commands;
+using YptoTaskManager.BE.IData.Queries;
 
 namespace YptoTaskManager.BE.API
 {
@@ -31,6 +35,16 @@ namespace YptoTaskManager.BE.API
                     Description = "Task management system challenge"
                 });
             });
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddScoped<ITaskItemQueryRepository, TaskItemQueryRepository>();
+            builder.Services.AddScoped<ITaskItemStatusQueryRepository, TaskItemStatusQueryRepository>();
+            builder.Services.AddScoped<ITaskItemTypeQueryRepository, TaskItemTypeQueryRepository>();
+            builder.Services.AddScoped<IUserQueryRepository, UserQueryRepository>();
+
+            builder.Services.AddScoped<ITaskItemCommandRepository, ITaskItemCommandRepository>();
+            builder.Services.AddScoped<IUserCommandRepository, IUserCommandRepository>();
 
             var app = builder.Build();
 
