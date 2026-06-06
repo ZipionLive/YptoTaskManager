@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\YptoTaskManager.BE.Domain\YptoTaskManager.BE.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

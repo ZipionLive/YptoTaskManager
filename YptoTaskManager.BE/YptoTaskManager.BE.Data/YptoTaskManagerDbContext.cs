@@ -8,8 +8,8 @@ namespace YptoTaskManager.BE.Data
         public YptoTaskManagerDbContext(DbContextOptions<YptoTaskManagerDbContext> options) : base(options) { }
 
         public DbSet<User> Users => Set<User>();
-        public DbSet<TaskItem> Tasks => Set<TaskItem>();
-        public DbSet<TaskItemStatus> TaskStatuses => Set<TaskItemStatus>();
+        public DbSet<TaskItem> TaskItems => Set<TaskItem>();
+        public DbSet<TaskItemStatus> TaskItemStatuses => Set<TaskItemStatus>();
         public DbSet<TaskItemType> TaskItemTypes => Set<TaskItemType>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\YptoTaskManager.BE.Domain\YptoTaskManager.BE.Domain.csproj" />
+    <ProjectReference Include="..\YptoTaskManager.BE.IData\YptoTaskManager.BE.IData.csproj" />
   </ItemGroup>
 
 </Project>
