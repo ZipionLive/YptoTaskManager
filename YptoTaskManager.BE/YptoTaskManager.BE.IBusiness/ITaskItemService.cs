@@ -12,6 +12,6 @@ public interface ITaskItemService
         int? statusId,
         CancellationToken cancellationToken = default);
     Task<TaskItem> CreateAsync(TaskItem taskItem, CancellationToken cancellationToken = default);
-    Task UpdateAsync(TaskItem taskItem, Guid modifyById, CancellationToken cancelToken = default);
+    Task UpdateAsync(TaskItem taskItem, IEnumerable<Guid> assignedUserIds, Guid modifyById, CancellationToken cancelToken = default);
     Task DeleteAsync(int taskId, Guid deleteById, CancellationToken cancellationToken = default);
 }

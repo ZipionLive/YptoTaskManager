@@ -6,7 +6,7 @@ namespace YptoTaskManager.BE.Domain.Entities
     {
         public int Id { get; set; }
         public Guid CreatedById { get; set; }
-        public required User CreatedBy { get; set; }
+        public User? CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public Guid? ModifiedById { get; set; }
         public User? ModifiedBy { get; set; }
@@ -16,9 +16,9 @@ namespace YptoTaskManager.BE.Domain.Entities
         public DateTime? DeletedOn { get; set; }
         public required string Name { get; set; }
         public int TaskTypeId { get; set; }
-        public required TaskItemType TaskType { get; set; }
+        public TaskItemType? TaskType { get; set; }
         public int TaskStatusId { get; set; }
-        public required TaskItemStatus TaskStatus { get; set; }
+        public TaskItemStatus? TaskStatus { get; set; }
         public ICollection<User> AssignedTo { get; set; } = [];
     }
 }

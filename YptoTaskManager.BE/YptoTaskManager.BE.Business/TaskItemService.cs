@@ -65,16 +65,32 @@ public class TaskItemService : ITaskItemService
     }
 
     public async Task UpdateAsync(
-        TaskItem taskItem,
-        Guid modifyById,
-        CancellationToken cancellationToken = default)
+    TaskItem taskItem,
+    IEnumerable<Guid> assignedUserIds,
+    Guid modifyById,
+    CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskItem);
+        TaskItem? existingTask =
+            await _commandRepository.GetForUpdateAsync(
+                taskItem.Id,
+                cancellationToken);
 
-        taskItem.ModifiedById = modifyById;
-        taskItem.ModifiedOn = DateTime.UtcNow;
+        if (existingTask is null)
+        {
+            throw new InvalidOperationException(
+                $"Task {taskItem.Id} not found.");
+        }
 
-        _commandRepository.Update(taskItem);
+        existingTask.Name = taskItem.Name;
+        existingTask.TaskTypeId = taskItem.TaskTypeId;
+        existingTask.TaskStatusId = taskItem.TaskStatusId;
+        existingTask.ModifiedById = modifyById;
+        existingTask.ModifiedOn = DateTime.UtcNow;
+
+        await _commandRepository.UpdateAssignmentsAsync(
+            taskItem.Id,
+            assignedUserIds,
+            cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(
             cancellationToken);

@@ -1,4 +1,5 @@
-﻿using YptoTaskManager.BE.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using YptoTaskManager.BE.Domain.Entities;
 using YptoTaskManager.BE.IData.Commands;
 
 namespace YptoTaskManager.BE.Data.Commands;
@@ -10,6 +11,11 @@ public class UserCommandRepository : IUserCommandRepository
     public UserCommandRepository(YptoTaskManagerDbContext context)
     {
         _context = context;
+    }
+
+    public Task<User?> GetForUpdateAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return _context.Users.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public Task AddAsync(User user, CancellationToken cancellationToken = default)
