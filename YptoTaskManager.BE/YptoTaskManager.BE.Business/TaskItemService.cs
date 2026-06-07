@@ -101,7 +101,7 @@ public class TaskItemService : ITaskItemService
         Guid deletedById,
         CancellationToken cancellationToken = default)
     {
-        TaskItem? task = await _queryRepository.GetByIdAsync(
+        TaskItem? task = await _commandRepository.GetForUpdateAsync(
             taskId,
             cancellationToken);
 
@@ -113,8 +113,6 @@ public class TaskItemService : ITaskItemService
 
         task.DeletedById = deletedById;
         task.DeletedOn = DateTime.UtcNow;
-
-        _commandRepository.Update(task);
 
         await _unitOfWork.SaveChangesAsync(
             cancellationToken);
