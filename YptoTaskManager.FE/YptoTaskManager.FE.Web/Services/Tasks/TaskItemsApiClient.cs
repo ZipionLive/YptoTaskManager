@@ -71,7 +71,7 @@ public class TaskItemsApiClient : ITaskItemsApiClient
 
     public async Task DeleteAsync(int id, Guid deletedById, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.DeleteAsync($"/api/tasks/{id}?deleteById={deletedById}", cancellationToken);
+        var response = await _httpClient.DeleteAsync($"api/tasks/{id}?deletedById={deletedById}", cancellationToken);
 
         await response.EnsureSuccessAsync(cancellationToken);
     }

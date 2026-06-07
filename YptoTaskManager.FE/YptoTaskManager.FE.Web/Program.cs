@@ -14,7 +14,9 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
 
-        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:8888/") });
+        var apiUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? throw new InvalidOperationException();
+
+        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUrl) });
 
         builder.Services.AddScoped<ITaskItemsApiClient, TaskItemsApiClient>();
         builder.Services.AddScoped<IUsersApiClient, UsersApiClient>();
