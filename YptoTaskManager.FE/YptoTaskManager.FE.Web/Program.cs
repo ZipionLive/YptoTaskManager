@@ -12,6 +12,8 @@ namespace YptoTaskManager.FE.Web
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:8888/") });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

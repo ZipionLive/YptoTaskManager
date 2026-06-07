@@ -52,7 +52,20 @@ namespace YptoTaskManager.BE.API
             builder.Services.AddScoped<ITaskItemService, TaskItemService>();
             builder.Services.AddScoped<IUserService, UserService>();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("Frontend", policy =>
+                {
+                    policy.WithOrigins("https://localhost:xxxx", "http://localhost:xxxx")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
+
             var app = builder.Build();
+
+            app.UseCors("Frontend");
 
             app.UseSwagger();
             app.UseSwaggerUI();
