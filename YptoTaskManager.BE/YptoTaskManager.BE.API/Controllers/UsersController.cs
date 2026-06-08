@@ -64,7 +64,7 @@ public class UsersController : ControllerBase
             LastName = request.LastName,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber,
-            PasswordHash = request.PasswordHash
+            PasswordHash = request.Password
         };
 
         var createdUser = await _userService.CreateAsync(user, cancellationToken);

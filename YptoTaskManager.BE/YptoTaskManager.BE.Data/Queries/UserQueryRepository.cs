@@ -24,7 +24,7 @@ public class UserQueryRepository : IUserQueryRepository
     {
         return _context.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email.ToLower()), cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<User>> GetAllAsync(CancellationToken cancellationToken = default)

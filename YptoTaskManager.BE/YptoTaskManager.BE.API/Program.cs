@@ -51,6 +51,7 @@ namespace YptoTaskManager.BE.API
 
             builder.Services.AddScoped<ITaskItemService, TaskItemService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             builder.Services.AddCors(options =>
             {
