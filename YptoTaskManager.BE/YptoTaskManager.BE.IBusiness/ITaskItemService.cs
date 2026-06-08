@@ -6,6 +6,7 @@ public interface ITaskItemService
 {
     Task<TaskItem?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<TaskItem>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<TaskItem>> GetAllForUserAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<TaskItem>> SearchAsync(
         string? name,
         int? typeId,

@@ -5,6 +5,7 @@ using YptoTaskManager.BE.IBusiness.Dtos;
 
 namespace YptoTaskManager.BE.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
@@ -17,6 +18,7 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -35,8 +37,8 @@ public class AuthController : ControllerBase
         }
     }
 
-    [Authorize]
     [HttpGet("whoami")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public ActionResult<string> WhoAmI()
     {
         return User.Identity?.Name ?? "Unknown";

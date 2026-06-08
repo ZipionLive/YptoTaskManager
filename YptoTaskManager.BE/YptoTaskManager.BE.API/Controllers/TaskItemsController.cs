@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using YptoTaskManager.BE.API.Dtos.Tasks;
 using YptoTaskManager.BE.API.Extensions;
 using YptoTaskManager.BE.Domain.Entities;
@@ -6,6 +8,7 @@ using YptoTaskManager.BE.IBusiness;
 
 namespace YptoTaskManager.BE.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
@@ -23,13 +26,24 @@ public class TaskItemsController : ControllerBase
     }
 
     /// <summary>
-    /// Gets all non-deleted tasks.
+    /// Gets all tasks assigned to or created by the authenticated user.
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyCollection<TaskItemDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyCollection<TaskItemDto>>> GetAll(CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyCollection<TaskItemDto>>> GetAll(
+        CancellationToken cancellationToken)
     {
-        var tasks = await _taskItemService.GetAllAsync(cancellationToken);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userIdClaim is null ||
+            !Guid.TryParse(userIdClaim.Value, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var tasks = await _taskItemService.GetAllForUserAsync(
+            userId,
+            cancellationToken);
 
         return Ok(tasks.Select(t => t.ToDto()).ToList());
     }

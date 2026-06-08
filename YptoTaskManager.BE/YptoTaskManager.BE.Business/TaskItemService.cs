@@ -38,6 +38,15 @@ public class TaskItemService : ITaskItemService
         return _queryRepository.GetAllAsync(cancellationToken);
     }
 
+    public Task<IReadOnlyCollection<TaskItem>> GetAllForUserAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        return _queryRepository.GetAllForUserAsync(
+            userId,
+            cancellationToken);
+    }
+
     public Task<IReadOnlyCollection<TaskItem>> SearchAsync(
         string? name,
         int? typeId,

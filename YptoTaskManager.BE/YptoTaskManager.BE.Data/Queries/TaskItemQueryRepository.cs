@@ -35,6 +35,25 @@ public class TaskItemQueryRepository : ITaskItemQueryRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyCollection<TaskItem>> GetAllForUserAsync(
+    Guid userId,
+    CancellationToken cancellationToken = default)
+    {
+        return await _context.TaskItems
+            .AsNoTracking()
+            .Include(t => t.CreatedBy)
+            .Include(t => t.TaskType)
+            .Include(t => t.TaskStatus)
+            .Include(t => t.AssignedTo)
+            .Where(t =>
+                t.DeletedOn == null &&
+                (
+                    t.CreatedById == userId ||
+                    t.AssignedTo.Any(u => u.Id == userId)
+                ))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyCollection<TaskItem>> GetByCreatorAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         return await _context.TaskItems

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using YptoTaskManager.BE.API.Dtos.Users;
 using YptoTaskManager.BE.API.Extensions;
 using YptoTaskManager.BE.Domain.Entities;
@@ -7,6 +8,7 @@ using YptoTaskManager.BE.IBusiness.Security;
 
 namespace YptoTaskManager.BE.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
