@@ -27,10 +27,7 @@ public class Program
             options.ScanAssemblies(typeof(Program).Assembly);
         });
 
-        builder.Services.AddLocalization(options =>
-        {
-            options.ResourcesPath = "Resources";
-        });
+        builder.Services.AddLocalization();
 
         var app = builder.Build();
 
