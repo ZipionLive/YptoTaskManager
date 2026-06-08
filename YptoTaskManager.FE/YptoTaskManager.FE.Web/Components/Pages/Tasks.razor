@@ -1,0 +1,153 @@
+﻿@page "/tasks"
+
+@using Fluxor
+@using YptoTaskManager.FE.Web.Components.Tasks
+@using YptoTaskManager.FE.Web.State.ActiveUser
+@using Microsoft.Extensions.Localization
+
+@inject IStringLocalizer<SharedResources> Loc
+@inject IState<ActiveUserState> ActiveUserState
+@inject NavigationManager NavigationManager
+
+<PageTitle>@Loc["Tasks"]</PageTitle>
+
+<div class="container-fluid mt-4">
+    @if (!ActiveUserState.Value.IsLoggedIn)
+    {
+        <div class="alert alert-warning">
+            @Loc["PleaseSelectUser"];
+        </div>
+
+        <button class="btn btn-primary" @onclick="GoToLogin">
+            @Loc["GoToLogin"]
+        </button>
+    }
+    else
+    {
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="mb-0">Tasks</h3>
+                <small class="text-muted">
+                    @Loc["ActiveUser"]:
+                    @ActiveUserState.Value.User!.FirstName
+                    @ActiveUserState.Value.User!.LastName
+                </small>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" @onclick="OpenCreateTaskModal">
+                    New task
+                </button>
+
+                <button class="btn btn-outline-primary" @onclick="LoadTasksAsync">
+                    Refresh
+                </button>
+            </div>
+        </div>
+
+        @if (_isLoading)
+        {
+            <div class="alert alert-info">@Loc["LoadingTasks"]</div>
+        }
+        else if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <div class="alert alert-danger">@_errorMessage</div>
+        }
+        else
+        {
+            <div class="row g-3">
+                <div class="col-12 col-lg-4">
+                    <div class="card bg-light h-100">
+                        <div class="card-header fw-bold">
+                            @Loc["ToDo"]
+                        </div>
+                        <div class="card-body">
+                            @foreach (var task in TodoTasks)
+                            {
+                                <TaskCard Task="task" OnOpen="OpenTask" />
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-4">
+                    <div class="card bg-light h-100">
+                        <div class="card-header fw-bold">
+                            @Loc["InProgress"]
+                        </div>
+                        <div class="card-body">
+                            @foreach (var task in InProgressTasks)
+                            {
+                                <TaskCard Task="task" OnOpen="OpenTask" />
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-4">
+                    <div class="card bg-light h-100">
+                        <div class="card-header fw-bold">
+                            @Loc["Done"]
+                        </div>
+                        <div class="card-body">
+                            @foreach (var task in DoneTasks)
+                            {
+                                <TaskCard Task="task" OnOpen="OpenTask" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@if (_selectedTask is not null)
+{
+    <div class="modal fade show d-block"
+         tabindex="-1"
+         style="background-color: rgba(0,0,0,.5);">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@(_isCreateMode ? Loc["CreateTask"] : Loc["EditTask"])</h5>
+                    <button type="button"
+                            class="btn-close"
+                            @onclick="CloseModal">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">@Loc["Name"]</label>
+                        <input class="form-control" @bind="_editName" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">@Loc["Status"]</label>
+                        <select class="form-select" @bind="_editStatusId">
+                            <option value="1">@Loc["ToDo"]</option>
+                            <option value="2">@Loc["InProgress"]</option>
+                            <option value="3">@Loc["Done"]</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">@Loc["TypeId"]</label>
+                        <input class="form-control" type="number" @bind="_editTypeId" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseModal">
+                        @Loc["Cancel"]
+                    </button>
+
+                    <button class="btn btn-primary" @onclick="SaveTaskAsync">
+                        @(_isCreateMode ? Loc["Create"] : Loc["Save"])
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

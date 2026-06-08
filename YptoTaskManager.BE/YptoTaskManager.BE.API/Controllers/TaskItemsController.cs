@@ -180,4 +180,22 @@ public class TaskItemsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("/rootTypes")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<TaskItemTypeDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyCollection<TaskItemTypeDto>>> GetRootTypes(CancellationToken cancellationToken)
+    {
+        var taskTypes = await _taskItemService.GetRootTypesAsync(cancellationToken);
+
+        return Ok(taskTypes.Select(tt => tt.ToDto()).ToList());
+    }
+
+    [HttpGet("/childrenTypes/{parentId:int}")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<TaskItemTypeDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyCollection<TaskItemTypeDto>>> GetChildrenTypes(int parentId, CancellationToken cancellationToken)
+    {
+        var taskTypes = await _taskItemService.GetChildrenTypesAsync(parentId, cancellationToken);
+
+        return Ok(taskTypes.Select(tt => tt.ToDto()).ToList());
+    }
 }

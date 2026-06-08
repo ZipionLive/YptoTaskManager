@@ -1,0 +1,25 @@
+﻿@using Microsoft.Extensions.Localization
+
+@inject IStringLocalizer<SharedResources> Loc
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <h6 class="card-title">@Task.Name</h6>
+
+        <div class="mb-2">
+            <span class="badge text-bg-secondary">@Task.TaskTypeName</span>
+            <span class="badge text-bg-info">@Task.TaskStatusName</span>
+        </div>
+
+        <small class="text-muted">
+            @Loc["CreatedOn"] @Task.CreatedOn.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+        </small>
+
+        <div class="mt-3 d-flex gap-2">
+            <button class="btn btn-sm btn-outline-primary"
+                    @onclick="OnOpenClicked">
+                @Loc["Open"]
+            </button>
+        </div>
+    </div>
+</div>

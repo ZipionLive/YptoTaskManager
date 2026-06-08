@@ -10,15 +10,18 @@ public class TaskItemService : ITaskItemService
 {
     private readonly ITaskItemQueryRepository _queryRepository;
     private readonly ITaskItemCommandRepository _commandRepository;
+    private readonly ITaskItemTypeQueryRepository _typesQueryRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public TaskItemService(
         ITaskItemQueryRepository queryRepository,
         ITaskItemCommandRepository commandRepository,
+        ITaskItemTypeQueryRepository typesQueryRepository,
         IUnitOfWork unitOfWork)
     {
         _queryRepository = queryRepository;
         _commandRepository = commandRepository;
+        _typesQueryRepository = typesQueryRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -116,5 +119,15 @@ public class TaskItemService : ITaskItemService
 
         await _unitOfWork.SaveChangesAsync(
             cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<TaskItemType>> GetRootTypesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _typesQueryRepository.GetRootTypesAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<TaskItemType>> GetChildrenTypesAsync(int parentId, CancellationToken cancellationToken = default)
+    {
+        return await _typesQueryRepository.GetChildrenAsync(parentId, cancellationToken);
     }
 }

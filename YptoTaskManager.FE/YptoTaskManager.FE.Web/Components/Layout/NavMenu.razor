@@ -1,6 +1,9 @@
 ﻿@using Microsoft.Extensions.Localization
+@using Fluxor
+@using YptoTaskManager.FE.Web.State.ActiveUser
 
 @inject IStringLocalizer<SharedResources> Loc
+@inject IState<ActiveUserState> ActiveUserState
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -20,8 +23,16 @@
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/login" Match="NavLinkMatch.All">
                 <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> @Loc["Login"]
-            </NavLink> 
+            </NavLink>
         </div>
+        @if (ActiveUserState.Value.IsLoggedIn)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/tasks" Match="NavLinkMatch.All">
+                    <span class="bi bi-kanban" aria-hidden="true"></span> @Loc["Tasks"]
+                </NavLink>
+            </div>
+        }
     </nav>
 </div>
 

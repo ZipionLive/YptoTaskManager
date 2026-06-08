@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <Fluxor.Blazor.Web.StoreInitializer />
+    <Fluxor.Blazor.Web.StoreInitializer @rendermode="InteractiveServer" />
     <Routes @rendermode="InteractiveServer" />
     <ReconnectModal />
     <script src="@Assets["_framework/blazor.web.js"]"></script>

@@ -117,11 +117,41 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ActiveUser" xml:space="preserve">
+    <value>Active user</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="Continue" xml:space="preserve">
     <value>Continue</value>
   </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="CreatedOn" xml:space="preserve">
+    <value>Created on</value>
+  </data>
+  <data name="CreateTask" xml:space="preserve">
+    <value>Create task</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="EditTask" xml:space="preserve">
+    <value>Edit task</value>
+  </data>
+  <data name="GoToLogin" xml:space="preserve">
+    <value>Go to login</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>In progress</value>
+  </data>
+  <data name="LoadingTasks" xml:space="preserve">
+    <value>Loading tasks...</value>
   </data>
   <data name="LoadingUsers" xml:space="preserve">
     <value>Loading users...</value>
@@ -129,14 +159,41 @@
   <data name="Login" xml:space="preserve">
     <value>Log in</value>
   </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
   <data name="NoUsersFound" xml:space="preserve">
     <value>No users found. Please create a user first.</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="PleaseSelectUser" xml:space="preserve">
+    <value>Please select an active user before viewing tasks.</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
   </data>
   <data name="SelectActiveUser" xml:space="preserve">
     <value>Select active user</value>
   </data>
   <data name="SelectUser" xml:space="preserve">
     <value>Select a user</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Tasks" xml:space="preserve">
+    <value>Tasks</value>
+  </data>
+  <data name="ToDo" xml:space="preserve">
+    <value>To do</value>
+  </data>
+  <data name="TypeId" xml:space="preserve">
+    <value>Type id</value>
   </data>
   <data name="User" xml:space="preserve">
     <value>User</value>
