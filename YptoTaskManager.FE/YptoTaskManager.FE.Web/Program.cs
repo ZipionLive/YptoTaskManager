@@ -1,3 +1,4 @@
+using Fluxor;
 using YptoTaskManager.FE.Web.Components;
 using YptoTaskManager.FE.Web.Services.Tasks;
 using YptoTaskManager.FE.Web.Services.Users;
@@ -21,7 +22,26 @@ public class Program
         builder.Services.AddScoped<ITaskItemsApiClient, TaskItemsApiClient>();
         builder.Services.AddScoped<IUsersApiClient, UsersApiClient>();
 
+        builder.Services.AddFluxor(options =>
+        {
+            options.ScanAssemblies(typeof(Program).Assembly);
+        });
+
+        builder.Services.AddLocalization(options =>
+        {
+            options.ResourcesPath = "Resources";
+        });
+
         var app = builder.Build();
+
+        var supportedCultures = new[] { "en", "fr", "nl" };
+
+        app.UseRequestLocalization(options =>
+        {
+            options.SetDefaultCulture("en");
+            options.AddSupportedCultures(supportedCultures);
+            options.AddSupportedUICultures(supportedCultures);
+        });
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
