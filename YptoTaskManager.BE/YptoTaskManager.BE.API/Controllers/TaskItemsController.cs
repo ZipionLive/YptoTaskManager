@@ -181,7 +181,7 @@ public class TaskItemsController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("/rootTypes")]
+    [HttpGet("rootTypes")]
     [ProducesResponseType(typeof(IReadOnlyCollection<TaskItemTypeDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<TaskItemTypeDto>>> GetRootTypes(CancellationToken cancellationToken)
     {
@@ -190,7 +190,7 @@ public class TaskItemsController : ControllerBase
         return Ok(taskTypes.Select(tt => tt.ToDto()).ToList());
     }
 
-    [HttpGet("/childrenTypes/{parentId:int}")]
+    [HttpGet("childrenTypes/{parentId:int}")]
     [ProducesResponseType(typeof(IReadOnlyCollection<TaskItemTypeDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyCollection<TaskItemTypeDto>>> GetChildrenTypes(int parentId, CancellationToken cancellationToken)
     {

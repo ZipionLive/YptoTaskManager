@@ -14,4 +14,7 @@ public interface ITaskItemsApiClient
     Task<TaskItemDto> CreateAsync(CreateTaskItemRequest request, CancellationToken cancellationToken = default);
     Task UpdateAsync(int id, UpdateTaskItemRequest request, CancellationToken cancellationToken = default);
     Task DeleteAsync(int id, Guid deletedById, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<TaskItemTypeDto>> GetRootTypesAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<TaskItemTypeDto>> GetChildrenTypesAsync(int parentId, CancellationToken cancellationToken = default);
+
 }

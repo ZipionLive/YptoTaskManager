@@ -102,7 +102,7 @@
     }
 </div>
 
-@if (_selectedTask is not null)
+@if (_isCreateMode || _selectedTask is not null)
 {
     <div class="modal fade show d-block"
          tabindex="-1"
@@ -133,8 +133,25 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">@Loc["TypeId"]</label>
-                        <input class="form-control" type="number" @bind="_editTypeId" />
+                        <label class="form-label">Parent type</label>
+                        <select class="form-select" @bind="_editParentTypeId" @bind:after="OnParentTypeChangedAsync">
+                            <option value="">-- Select parent type --</option>
+                            @foreach (var type in _rootTypes)
+                            {
+                                <option value="@type.Id">@type.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Task type</label>
+                        <select class="form-select" @bind="_editTypeId" disabled="@(!_editParentTypeId.HasValue)">
+                            <option value="0">-- Select task type --</option>
+                            @foreach (var type in _childrenTypes)
+                            {
+                                <option value="@type.Id">@type.Name</option>
+                            }
+                        </select>
                     </div>
                 </div>
 

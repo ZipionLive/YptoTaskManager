@@ -1,0 +1,73 @@
+﻿@page "/profile"
+
+@using Fluxor
+@using Microsoft.Extensions.Localization
+@using YptoTaskManager.FE.Web
+@using YptoTaskManager.FE.Web.Dtos.Users
+@using YptoTaskManager.FE.Web.Services.Users
+@using YptoTaskManager.FE.Web.State.ActiveUser
+
+@inject IState<ActiveUserState> ActiveUserState
+@inject IDispatcher Dispatcher
+@inject IUsersApiClient UsersApiClient
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<SharedResources> Loc
+
+<PageTitle>Profile</PageTitle>
+
+<div class="container mt-4">
+    @if (!ActiveUserState.Value.IsLoggedIn)
+    {
+        <div class="alert alert-warning">
+            Please select an active user before editing a profile.
+        </div>
+
+        <button class="btn btn-primary" @onclick="GoToLogin">
+            Go to login
+        </button>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="mb-0">Profile</h4>
+            </div>
+
+            <div class="card-body">
+                @if (!string.IsNullOrWhiteSpace(_errorMessage))
+                {
+                    <div class="alert alert-danger">@_errorMessage</div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(_successMessage))
+                {
+                    <div class="alert alert-success">@_successMessage</div>
+                }
+
+                <div class="mb-3">
+                    <label class="form-label">First name</label>
+                    <input class="form-control" @bind="_firstName" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Last name</label>
+                    <input class="form-control" @bind="_lastName" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="email" @bind="_email" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phone number</label>
+                    <input class="form-control" @bind="_phoneNumber" />
+                </div>
+
+                <button class="btn btn-primary" @onclick="SaveAsync" disabled="@_isSaving">
+                    @(_isSaving ? "Saving..." : "Save")
+                </button>
+            </div>
+        </div>
+    }
+</div>

@@ -19,6 +19,9 @@ public partial class Tasks
     private int _editTypeId;
     private int _editStatusId;
     private bool _isCreateMode;
+    private List<TaskItemTypeDto> _rootTypes = [];
+    private List<TaskItemTypeDto> _childrenTypes = [];
+    private int? _editParentTypeId;
 
     private IEnumerable<TaskItemDto> VisibleTasks =>
         ActiveUserState.Value.User is null
@@ -38,6 +41,8 @@ public partial class Tasks
 
     protected override async Task OnInitializedAsync()
     {
+        _rootTypes = (await TaskItemsApiClient.GetRootTypesAsync()).ToList();
+
         if (ActiveUserState.Value.IsLoggedIn)
         {
             await LoadTasksAsync();
@@ -67,13 +72,31 @@ public partial class Tasks
         }
     }
 
-    private void OpenTask(TaskItemDto task)
+    private async Task OpenTask(TaskItemDto task)
     {
         _isCreateMode = false;
         _selectedTask = task;
+
         _editName = task.Name;
         _editTypeId = task.TaskTypeId;
         _editStatusId = task.TaskStatusId;
+
+        var childType = _rootTypes
+            .SelectMany(_ => _childrenTypes)
+            .FirstOrDefault(x => x.Id == task.TaskTypeId);
+
+        // Plus fiable : retrouver le parent en testant tous les parents.
+        foreach (var rootType in _rootTypes)
+        {
+            var children = (await TaskItemsApiClient.GetChildrenTypesAsync(rootType.Id)).ToList();
+
+            if (children.Any(x => x.Id == task.TaskTypeId))
+            {
+                _editParentTypeId = rootType.Id;
+                _childrenTypes = children;
+                break;
+            }
+        }
     }
 
     private void OpenCreateTaskModal()
@@ -84,19 +107,12 @@ public partial class Tasks
         }
 
         _isCreateMode = true;
-        _selectedTask = new TaskItemDto(
-            0,
-            string.Empty,
-            4,
-            "Development",
-            1,
-            "To do",
-            ActiveUserState.Value.User.Id,
-            DateTime.UtcNow,
-            [ActiveUserState.Value.User.Id]);
+        _selectedTask = null;
 
         _editName = string.Empty;
-        _editTypeId = 4;
+        _editParentTypeId = null;
+        _childrenTypes = [];
+        _editTypeId = 0;
         _editStatusId = 1;
     }
 
@@ -111,7 +127,12 @@ public partial class Tasks
 
     private async Task SaveTaskAsync()
     {
-        if (_selectedTask is null || ActiveUserState.Value.User is null)
+        if (ActiveUserState.Value.User is null)
+        {
+            return;
+        }
+
+        if (!_isCreateMode && _selectedTask is null)
         {
             return;
         }
@@ -119,6 +140,12 @@ public partial class Tasks
         if (string.IsNullOrWhiteSpace(_editName))
         {
             _errorMessage = "Task name is required.";
+            return;
+        }
+
+        if (_editTypeId <= 0)
+        {
+            _errorMessage = "Task type is required.";
             return;
         }
 
@@ -135,6 +162,11 @@ public partial class Tasks
         }
         else
         {
+            if (_selectedTask is null)
+            {
+                return;
+            }
+
             var updateRequest = new UpdateTaskItemRequest(
                 _editName,
                 _editTypeId,
@@ -150,6 +182,21 @@ public partial class Tasks
         CloseModal();
 
         await LoadTasksAsync();
+    }
+
+    private async Task OnParentTypeChangedAsync()
+    {
+        _childrenTypes = [];
+        _editTypeId = 0;
+
+        if (!_editParentTypeId.HasValue)
+        {
+            return;
+        }
+
+        _childrenTypes = (await TaskItemsApiClient
+            .GetChildrenTypesAsync(_editParentTypeId.Value))
+            .ToList();
     }
 
     private void GoToLogin()

@@ -75,4 +75,14 @@ public class TaskItemsApiClient : ITaskItemsApiClient
 
         await response.EnsureSuccessAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyCollection<TaskItemTypeDto>> GetRootTypesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _httpClient.GetFromJsonAsync<IReadOnlyCollection<TaskItemTypeDto>>("api/tasks/rootTypes", cancellationToken) ?? [];
+    }
+
+    public async Task<IReadOnlyCollection<TaskItemTypeDto>> GetChildrenTypesAsync(int parentId, CancellationToken cancellationToken = default)
+    {
+        return await _httpClient.GetFromJsonAsync<IReadOnlyCollection<TaskItemTypeDto>>($"api/tasks/childrenTypes/{parentId}", cancellationToken) ?? [];
+    }
 }
