@@ -2,10 +2,11 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
+using YptoTaskManager.BE.Domain.Entities;
 using YptoTaskManager.BE.IBusiness;
 using YptoTaskManager.BE.IBusiness.Dtos;
+using YptoTaskManager.BE.IBusiness.Security;
 using YptoTaskManager.BE.IData.Queries;
 
 namespace YptoTaskManager.BE.Business;
@@ -14,12 +15,15 @@ public class AuthService : IAuthService
 {
     private readonly IUserQueryRepository _userQueryRepository;
     private readonly IConfiguration _configuration;
+    private readonly IPasswordHasher _passwordHasher;
 
     public AuthService(
         IUserQueryRepository userQueryRepository,
+        IPasswordHasher passwordHasher,
         IConfiguration configuration)
     {
         _userQueryRepository = userQueryRepository;
+        _passwordHasher = passwordHasher;
         _configuration = configuration;
     }
 
@@ -29,10 +33,9 @@ public class AuthService : IAuthService
             request.Email,
             cancellationToken) ?? throw new UnauthorizedAccessException("Invalid credentials.");
 
-        var passwordHash =
-            ComputePasswordHash(
-                request.Password,
-                user.PasswordSalt);
+        var passwordHash = _passwordHasher.ComputePasswordHash(
+            request.Password,
+            user.PasswordSalt);
 
         if (!passwordHash.Equals(
                 user.PasswordHash,
@@ -52,7 +55,7 @@ public class AuthService : IAuthService
             user.PhoneNumber);
     }
 
-    private string GenerateJwtToken(Domain.Entities.User user)
+    private string GenerateJwtToken(User user)
     {
         var issuer = _configuration["Jwt:Issuer"]
             ?? throw new InvalidOperationException("Missing Jwt:Issuer");
@@ -91,19 +94,5 @@ public class AuthService : IAuthService
 
         return new JwtSecurityTokenHandler()
             .WriteToken(token);
-    }
-
-    private static string ComputePasswordHash(
-        string password,
-        Guid salt)
-    {
-        var bytes =
-            Encoding.UTF8.GetBytes(
-                $"{password}{salt}");
-
-        var hash =
-            SHA256.HashData(bytes);
-
-        return Convert.ToHexString(hash);
     }
 }

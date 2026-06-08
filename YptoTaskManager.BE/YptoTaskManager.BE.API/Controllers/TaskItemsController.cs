@@ -7,7 +7,7 @@ using YptoTaskManager.BE.IBusiness;
 namespace YptoTaskManager.BE.API.Controllers;
 
 [ApiController]
-[Route("api/tasks")]
+[Route("api/[controller]")]
 [Produces("application/json")]
 public class TaskItemsController : ControllerBase
 {

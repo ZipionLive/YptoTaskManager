@@ -3,19 +3,22 @@ using YptoTaskManager.BE.API.Dtos.Users;
 using YptoTaskManager.BE.API.Extensions;
 using YptoTaskManager.BE.Domain.Entities;
 using YptoTaskManager.BE.IBusiness;
+using YptoTaskManager.BE.IBusiness.Security;
 
 namespace YptoTaskManager.BE.API.Controllers;
 
 [ApiController]
-[Route("api/users")]
+[Route("api/[controller]")]
 [Produces("application/json")]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IPasswordHasher passwordHasher)
     {
         _userService = userService;
+        _passwordHasher = passwordHasher;
     }
 
     /// <summary>
@@ -58,13 +61,16 @@ public class UsersController : ControllerBase
         CreateUserRequest request,
         CancellationToken cancellationToken)
     {
+        var salt = Guid.NewGuid();
+
         var user = new User
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber,
-            PasswordHash = request.Password
+            PasswordSalt = salt,
+            PasswordHash = _passwordHasher.ComputePasswordHash(request.Password, salt)
         };
 
         var createdUser = await _userService.CreateAsync(user, cancellationToken);
