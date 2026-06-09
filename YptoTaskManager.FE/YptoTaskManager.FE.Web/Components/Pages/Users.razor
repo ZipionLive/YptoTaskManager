@@ -1,0 +1,150 @@
+﻿@page "/users"
+
+@using Microsoft.Extensions.Localization
+@using YptoTaskManager.FE.Web.Dtos.Enums
+
+@inject IStringLocalizer<SharedResources> Loc
+
+<PageTitle>Users</PageTitle>
+
+<div class="container mt-4">
+    @if (!IsAdmin)
+    {
+        <div class="alert alert-danger">
+            @Loc["AdminOnly"]
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0">@Loc["Users"]</h3>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" @onclick="OpenCreateModal">
+                    Create
+                </button>
+
+                <button class="btn btn-outline-primary" @onclick="LoadUsersAsync">
+                    Refresh
+                </button>
+            </div>
+        </div>
+
+        @if (_isLoading)
+        {
+            <div class="alert alert-info">@Loc["LoadingUsers"]</div>
+        }
+        else if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <div class="alert alert-danger">@_errorMessage</div>
+        }
+        else
+        {
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>@Loc["FirstName"]</th>
+                                <th>@Loc["LastName"]</th>
+                                <th>@Loc["Email"]</th>
+                                <th>@Loc["Phone"]</th>
+                                <th>@Loc["Role"]</th>
+                                <th class="text-end">@Loc["Actions"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in _users)
+                            {
+                                <tr>
+                                    <td>@user.FirstName</td>
+                                    <td>@user.LastName</td>
+                                    <td>@user.Email</td>
+                                    <td>@user.PhoneNumber</td>
+                                    <td>
+                                        <span class="badge @(user.Role == UserRole.Admin ? "text-bg-danger" : "text-bg-secondary")">
+                                            @user.Role
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-primary me-2"
+                                                @onclick="() => OpenEditModal(user)">
+                                            @Loc["Edit"]
+                                        </button>
+
+                                        <button class="btn btn-sm btn-outline-danger"
+                                                disabled="@(user.Id == ActiveUserState.Value.User?.Id)"
+                                                @onclick="() => DeleteUserAsync(user.Id)">
+                                            @Loc["Delete"]
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@if (_isCreateMode || _editedUser is not null)
+{
+    <div class="modal fade show d-block"
+         tabindex="-1"
+         style="background-color: rgba(0,0,0,.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        @(_isCreateMode ? Loc["CreateUser"] : Loc["EditUser"])
+                    </h5>
+                    <button type="button" class="btn-close" @onclick="CloseModal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">@Loc["FirstName"]</label>
+                        <input class="form-control" @bind="_firstName" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">@Loc["LastName"]</label>
+                        <input class="form-control" @bind="_lastName" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">@Loc["Email"]</label>
+                        <input class="form-control" type="email" @bind="_email" />
+                    </div>
+
+                    @if (_isCreateMode)
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input class="form-control"
+                                   type="password"
+                                   @bind="_password"
+                                   autocomplete="new-password" />
+                        </div>
+                    }
+
+                    <div class="mb-3">
+                        <label class="form-label">@Loc["Phone"]</label>
+                        <input class="form-control" @bind="_phoneNumber" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseModal">
+                        @Loc["Cancel"]
+                    </button>
+
+                    <button class="btn btn-primary" @onclick="SaveUserAsync">
+                        @(_isCreateMode ? Loc["Create"] : Loc["Save"])
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

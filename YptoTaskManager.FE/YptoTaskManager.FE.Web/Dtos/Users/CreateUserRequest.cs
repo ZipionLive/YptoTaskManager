@@ -5,4 +5,4 @@ public record CreateUserRequest(
     string LastName,
     string Email,
     string PhoneNumber,
-    string PasswordHash);
+    string Password);

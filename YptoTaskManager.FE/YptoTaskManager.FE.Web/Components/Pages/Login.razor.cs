@@ -12,7 +12,7 @@ namespace YptoTaskManager.FE.Web.Components.Pages;
 public partial class Login
 {
     [Inject]
-    private HttpClient HttpClient { get; set; } = default;
+    private HttpClient HttpClient { get; set; } = new();
 
     [Inject]
     private IAuthApiClient AuthApiClient { get; set; } = default!;
@@ -60,7 +60,8 @@ public partial class Login
                 response.FirstName,
                 response.LastName,
                 response.Email,
-                response.PhoneNumber);
+                response.PhoneNumber,
+                response.Role);
 
             Dispatcher.Dispatch(new SetActiveUserAction(user));
 
