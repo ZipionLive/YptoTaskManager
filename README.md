@@ -178,16 +178,16 @@ Apply migrations:
 dotnet ef database update
 ```
 
-Run the API:
-
-```bash
-dotnet run
-```
-
 ... or using the package manager console from the migrations project:
 
 ```bash
 update-database
+```
+
+Run the API:
+
+```bash
+dotnet run
 ```
 
 Swagger will be available at:
