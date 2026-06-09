@@ -1,70 +1,55 @@
 ﻿@page "/login"
 
-@using Fluxor
-@using YptoTaskManager.FE.Web.Services.Users
 @using Microsoft.Extensions.Localization
+@using YptoTaskManager.FE.Web
 
-@inject IUsersApiClient UsersApiClient
-@inject IDispatcher Dispatcher
-@inject NavigationManager NavigationManager
 @inject IStringLocalizer<SharedResources> Loc
 
 <PageTitle>@Loc["Login"]</PageTitle>
 
 <div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6">
+        <div class="col-12 col-md-8 col-lg-5">
             <div class="card shadow-sm">
                 <div class="card-header">
-                    <h4 class="mb-0">@Loc["SelectActiveUser"]</h4>
+                    <h4 class="mb-0">@Loc["Login"]</h4>
                 </div>
 
                 <div class="card-body">
-                    @if (_isLoading)
-                    {
-                        <div class="alert alert-info mb-0">
-                            @Loc["LoadingUsers"]
-                        </div>
-                    }
-                    else if (!string.IsNullOrWhiteSpace(_errorMessage))
+                    @if (!string.IsNullOrWhiteSpace(_errorMessage))
                     {
                         <div class="alert alert-danger">
                             @_errorMessage
                         </div>
                     }
-                    else if (_users.Count == 0)
-                    {
-                        <div class="alert alert-warning mb-0">
-                            @Loc["NoUsersFound"]
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="mb-3">
-                            <label class="form-label" for="activeUser">
-                                @Loc["User"]
-                            </label>
 
-                            <select id="activeUser"
-                                    class="form-select"
-                                    @bind="_selectedUserId">
-                                <option value="">-- @Loc["SelectUser"] --</option>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">
+                            @Loc["Email"]
+                        </label>
+                        <input id="email"
+                               class="form-control"
+                               type="email"
+                               @bind="_email"
+                               autocomplete="username" />
+                    </div>
 
-                                @foreach (var user in _users)
-                                {
-                                    <option value="@user.Id">
-                                        @user.FirstName @user.LastName (@user.Email)
-                                    </option>
-                                }
-                            </select>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="password">
+                            @Loc["Password"]
+                        </label>
+                        <input id="password"
+                               class="form-control"
+                               type="password"
+                               @bind="_password"
+                               autocomplete="current-password" />
+                    </div>
 
-                        <button class="btn btn-primary"
-                                disabled="@(!_selectedUserId.HasValue)"
-                                @onclick="LoginAsync">
-                            @Loc["Continue"]
-                        </button>
-                    }
+                    <button class="btn btn-primary"
+                            disabled="@_isLoading"
+                            @onclick="LoginAsync">
+                        @(_isLoading ? Loc["Loading"] : Loc["Continue"])
+                    </button>
                 </div>
             </div>
         </div>

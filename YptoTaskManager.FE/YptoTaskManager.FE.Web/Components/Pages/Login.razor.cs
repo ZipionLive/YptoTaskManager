@@ -1,26 +1,70 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Fluxor;
+using Microsoft.AspNetCore.Components;
+using YptoTaskManager.FE.Web.Dtos.Auth;
 using YptoTaskManager.FE.Web.Dtos.Users;
 using YptoTaskManager.FE.Web.Services;
+using YptoTaskManager.FE.Web.Services.Auth;
 using YptoTaskManager.FE.Web.State.ActiveUser;
 
 namespace YptoTaskManager.FE.Web.Components.Pages;
 
 public partial class Login
 {
-    private List<UserDto> _users = [];
-    private Guid? _selectedUserId;
-    private bool _isLoading = true;
+    [Inject]
+    private IAuthApiClient AuthApiClient { get; set; } = default!;
+
+    [Inject]
+    private IAuthTokenProvider AuthTokenProvider { get; set; } = default!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = default!;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
+    private string _email = string.Empty;
+    private string _password = string.Empty;
+    private bool _isLoading;
     private string? _errorMessage;
 
-    protected override async Task OnInitializedAsync()
+    private async Task LoginAsync()
     {
+        _errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(_email) ||
+            string.IsNullOrWhiteSpace(_password))
+        {
+            _errorMessage = "Email and password are required.";
+            return;
+        }
+
+        _isLoading = true;
+
         try
         {
-            _users = (await UsersApiClient.GetAllAsync()).ToList();
+            var response = await AuthApiClient.LoginAsync(
+                new LoginRequest(
+                    _email,
+                    _password));
+
+            AuthTokenProvider.SetToken(response.Token);
+
+            var user = new UserDto(
+                response.UserId,
+                response.FirstName,
+                response.LastName,
+                response.Email,
+                response.PhoneNumber);
+
+            Dispatcher.Dispatch(new SetActiveUserAction(user));
+
+            NavigationManager.NavigateTo("/tasks");
         }
         catch (ApiException ex)
         {
-            _errorMessage = $"API error {ex.StatusCode}: {ex.Message}";
+            _errorMessage = ex.StatusCode == StatusCodes.Status401Unauthorized
+                ? "Invalid email or password."
+                : $"API error {ex.StatusCode}: {ex.Message}";
         }
         catch (Exception ex)
         {
@@ -30,27 +74,5 @@ public partial class Login
         {
             _isLoading = false;
         }
-    }
-
-    private Task LoginAsync()
-    {
-        if (!_selectedUserId.HasValue)
-        {
-            return Task.CompletedTask;
-        }
-
-        var selectedUser = _users.FirstOrDefault(x => x.Id == _selectedUserId.Value);
-
-        if (selectedUser is null)
-        {
-            _errorMessage = "Selected user was not found.";
-            return Task.CompletedTask;
-        }
-
-        Dispatcher.Dispatch(new SetActiveUserAction(selectedUser));
-
-        NavigationManager.NavigateTo("/tasks");
-
-        return Task.CompletedTask;
     }
 }

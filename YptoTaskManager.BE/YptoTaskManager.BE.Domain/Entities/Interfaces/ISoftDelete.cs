@@ -1,9 +1,8 @@
-﻿namespace YptoTaskManager.BE.Domain.Entities.Interfaces
+﻿namespace YptoTaskManager.BE.Domain.Entities.Interfaces;
+
+public interface ISoftDelete
 {
-    public interface ISoftDelete
-    {
-        Guid? DeletedById { get; set; }
-        User? DeletedBy { get; set; }
-        DateTime? DeletedOn { get; set; }
-    }
+    Guid? DeletedById { get; set; }
+    User? DeletedBy { get; set; }
+    DateTime? DeletedOn { get; set; }
 }

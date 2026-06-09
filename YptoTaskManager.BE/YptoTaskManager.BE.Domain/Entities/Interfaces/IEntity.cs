@@ -1,7 +1,6 @@
-﻿namespace YptoTaskManager.BE.Domain.Entities.Interfaces
+﻿namespace YptoTaskManager.BE.Domain.Entities.Interfaces;
+
+public interface IEntity<T>
 {
-    public interface IEntity<T>
-    {
-        T Id { get; set; }
-    }
+    T Id { get; set; }
 }

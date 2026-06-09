@@ -1,5 +1,6 @@
 using Fluxor;
 using YptoTaskManager.FE.Web.Components;
+using YptoTaskManager.FE.Web.Services.Auth;
 using YptoTaskManager.FE.Web.Services.Tasks;
 using YptoTaskManager.FE.Web.Services.Users;
 
@@ -17,8 +18,21 @@ public class Program
 
         var apiUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? throw new InvalidOperationException();
 
-        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUrl) });
+        builder.Services.AddScoped<IAuthTokenProvider, AuthTokenProvider>();
+        builder.Services.AddTransient<AuthHeaderHandler>();
 
+        //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUrl) });
+
+        builder.Services.AddHttpClient("YptoTaskManagerApi", client =>
+        {
+            client.BaseAddress = new Uri(apiUrl);
+        }).AddHttpMessageHandler<AuthHeaderHandler>();
+
+        builder.Services.AddScoped(
+            sp => sp.GetRequiredService<IHttpClientFactory>()
+                .CreateClient("YptoTaskManagerApi"));
+
+        builder.Services.AddScoped<IAuthApiClient, AuthApiClient>();
         builder.Services.AddScoped<ITaskItemsApiClient, TaskItemsApiClient>();
         builder.Services.AddScoped<IUsersApiClient, UsersApiClient>();
 
