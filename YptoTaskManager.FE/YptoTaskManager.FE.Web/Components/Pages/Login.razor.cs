@@ -1,5 +1,6 @@
 ﻿using Fluxor;
 using Microsoft.AspNetCore.Components;
+using System.Net.Http.Headers;
 using YptoTaskManager.FE.Web.Dtos.Auth;
 using YptoTaskManager.FE.Web.Dtos.Users;
 using YptoTaskManager.FE.Web.Services;
@@ -10,6 +11,9 @@ namespace YptoTaskManager.FE.Web.Components.Pages;
 
 public partial class Login
 {
+    [Inject]
+    private HttpClient HttpClient { get; set; } = default;
+
     [Inject]
     private IAuthApiClient AuthApiClient { get; set; } = default!;
 
@@ -48,6 +52,8 @@ public partial class Login
                     _password));
 
             AuthTokenProvider.SetToken(response.Token);
+
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", response.Token);
 
             var user = new UserDto(
                 response.UserId,

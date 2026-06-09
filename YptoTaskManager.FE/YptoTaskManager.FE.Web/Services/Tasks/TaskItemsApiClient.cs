@@ -16,7 +16,7 @@ public class TaskItemsApiClient : ITaskItemsApiClient
 
     public async Task<IReadOnlyCollection<TaskItemDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _httpClient.GetFromJsonAsync<IReadOnlyCollection<TaskItemDto>>( "api/tasks", cancellationToken) ?? [];
+        return await _httpClient.GetFromJsonAsync<IReadOnlyCollection<TaskItemDto>>( "api/taskitems", cancellationToken) ?? [];
     }
 
     public async Task<IReadOnlyCollection<TaskItemDto>> SearchAsync(
@@ -36,14 +36,14 @@ public class TaskItemsApiClient : ITaskItemsApiClient
         if (statusId.HasValue)
             query["statusId"] = statusId.Value.ToString();
 
-        var url = QueryHelpers.AddQueryString("api/tasks/search", query);
+        var url = QueryHelpers.AddQueryString("api/taskitems/search", query);
 
         return await _httpClient.GetFromJsonAsync<IReadOnlyCollection<TaskItemDto>>(url, cancellationToken) ?? [];
     }
 
     public async Task<TaskItemDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.GetAsync($"api/tasks/{id}", cancellationToken);
+        var response = await _httpClient.GetAsync($"api/taskitems/{id}", cancellationToken);
 
         if (response.StatusCode == HttpStatusCode.NotFound) { return null; }
 
@@ -54,7 +54,7 @@ public class TaskItemsApiClient : ITaskItemsApiClient
 
     public async Task<TaskItemDto> CreateAsync(CreateTaskItemRequest request, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/tasks", request, cancellationToken);
+        var response = await _httpClient.PostAsJsonAsync("api/taskitems", request, cancellationToken);
 
         await response.EnsureSuccessAsync(cancellationToken);
 
@@ -64,25 +64,25 @@ public class TaskItemsApiClient : ITaskItemsApiClient
 
     public async Task UpdateAsync(int id, UpdateTaskItemRequest request, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.PutAsJsonAsync($"api/tasks/{id}", request, cancellationToken);
+        var response = await _httpClient.PutAsJsonAsync($"api/taskitems/{id}", request, cancellationToken);
 
         await response.EnsureSuccessAsync(cancellationToken);
     }
 
     public async Task DeleteAsync(int id, Guid deletedById, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.DeleteAsync($"api/tasks/{id}?deletedById={deletedById}", cancellationToken);
+        var response = await _httpClient.DeleteAsync($"api/taskitems/{id}?deletedById={deletedById}", cancellationToken);
 
         await response.EnsureSuccessAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<TaskItemTypeDto>> GetRootTypesAsync(CancellationToken cancellationToken = default)
     {
-        return await _httpClient.GetFromJsonAsync<IReadOnlyCollection<TaskItemTypeDto>>("api/tasks/rootTypes", cancellationToken) ?? [];
+        return await _httpClient.GetFromJsonAsync<IReadOnlyCollection<TaskItemTypeDto>>("api/taskitems/rootTypes", cancellationToken) ?? [];
     }
 
     public async Task<IReadOnlyCollection<TaskItemTypeDto>> GetChildrenTypesAsync(int parentId, CancellationToken cancellationToken = default)
     {
-        return await _httpClient.GetFromJsonAsync<IReadOnlyCollection<TaskItemTypeDto>>($"api/tasks/childrenTypes/{parentId}", cancellationToken) ?? [];
+        return await _httpClient.GetFromJsonAsync<IReadOnlyCollection<TaskItemTypeDto>>($"api/taskitems/childrenTypes/{parentId}", cancellationToken) ?? [];
     }
 }
