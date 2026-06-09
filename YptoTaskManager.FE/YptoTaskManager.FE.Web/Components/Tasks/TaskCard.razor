@@ -11,6 +11,22 @@
             <span class="badge text-bg-info">@Task.TaskStatusName</span>
         </div>
 
+        <div class="mb-2">
+            <small class="text-muted">Assigned to:</small>
+
+            @if (!AssignedUserNames.Any())
+            {
+                <span class="badge text-bg-light">None</span>
+            }
+            else
+            {
+                @foreach (var userName in AssignedUserNames)
+                {
+                    <span class="badge text-bg-primary me-1">@userName</span>
+                }
+            }
+        </div>
+
         <small class="text-muted">
             @Loc["CreatedOn"] @Task.CreatedOn.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
         </small>

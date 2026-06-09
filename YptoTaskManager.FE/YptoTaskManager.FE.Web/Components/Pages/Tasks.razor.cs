@@ -2,6 +2,8 @@
 using YptoTaskManager.FE.Web.Dtos.Tasks;
 using YptoTaskManager.FE.Web.Services;
 using YptoTaskManager.FE.Web.Services.Tasks;
+using YptoTaskManager.FE.Web.Dtos.Users;
+using YptoTaskManager.FE.Web.Services.Users;
 
 namespace YptoTaskManager.FE.Web.Components.Pages;
 
@@ -9,6 +11,11 @@ public partial class Tasks
 {
     [Inject]
     private ITaskItemsApiClient TaskItemsApiClient { get; set; } = default!;
+    [Inject]
+    private IUsersApiClient UsersApiClient { get; set; } = default!;
+
+    private List<UserDto> _users = [];
+    private HashSet<Guid> _selectedAssignedUserIds = [];
 
     private List<TaskItemDto> _tasks = [];
     private bool _isLoading;
@@ -42,6 +49,7 @@ public partial class Tasks
     protected override async Task OnInitializedAsync()
     {
         _rootTypes = (await TaskItemsApiClient.GetRootTypesAsync()).ToList();
+        _users = (await UsersApiClient.GetAllAsync()).ToList();
 
         if (ActiveUserState.Value.IsLoggedIn)
         {
@@ -81,6 +89,8 @@ public partial class Tasks
         _editTypeId = task.TaskTypeId;
         _editStatusId = task.TaskStatusId;
 
+        _selectedAssignedUserIds = task.AssignedUserIds.ToHashSet();
+
         var childType = _rootTypes
             .SelectMany(_ => _childrenTypes)
             .FirstOrDefault(x => x.Id == task.TaskTypeId);
@@ -114,6 +124,22 @@ public partial class Tasks
         _childrenTypes = [];
         _editTypeId = 0;
         _editStatusId = 1;
+
+        _selectedAssignedUserIds = [ActiveUserState.Value.User.Id];
+    }
+
+    private void OnAssignedUserChanged(Guid userId, ChangeEventArgs e)
+    {
+        var isChecked = e.Value is bool value && value;
+
+        if (isChecked)
+        {
+            _selectedAssignedUserIds.Add(userId);
+        }
+        else
+        {
+            _selectedAssignedUserIds.Remove(userId);
+        }
     }
 
     private void CloseModal()
@@ -123,6 +149,7 @@ public partial class Tasks
         _editName = string.Empty;
         _editTypeId = 0;
         _editStatusId = 0;
+        _selectedAssignedUserIds = [];
     }
 
     private async Task SaveTaskAsync()
@@ -156,7 +183,7 @@ public partial class Tasks
                 _editTypeId,
                 _editStatusId,
                 ActiveUserState.Value.User.Id,
-                [ActiveUserState.Value.User.Id]);
+                _selectedAssignedUserIds.ToList());
 
             await TaskItemsApiClient.CreateAsync(createRequest);
         }
@@ -172,7 +199,7 @@ public partial class Tasks
                 _editTypeId,
                 _editStatusId,
                 ActiveUserState.Value.User.Id,
-                _selectedTask.AssignedUserIds);
+                _selectedAssignedUserIds.ToList());
 
             await TaskItemsApiClient.UpdateAsync(
                 _selectedTask.Id,
