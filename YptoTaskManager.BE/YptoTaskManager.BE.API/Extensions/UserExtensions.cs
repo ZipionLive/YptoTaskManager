@@ -12,7 +12,8 @@ namespace YptoTaskManager.BE.API.Extensions
                 user.FirstName,
                 user.LastName,
                 user.Email,
-                user.PhoneNumber);
+                user.PhoneNumber,
+                user.Role);
         }
     }
 }

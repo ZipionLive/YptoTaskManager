@@ -52,7 +52,8 @@ public class AuthService : IAuthService
             user.FirstName,
             user.LastName,
             user.Email,
-            user.PhoneNumber);
+            user.PhoneNumber,
+            user.Role);
     }
 
     private string GenerateJwtToken(User user)
@@ -72,7 +73,9 @@ public class AuthService : IAuthService
             new(JwtRegisteredClaimNames.Email, user.Email),
 
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
+            new(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Role, user.Role.ToString())
         };
 
         var securityKey =

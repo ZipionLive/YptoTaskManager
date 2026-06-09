@@ -1,4 +1,6 @@
-﻿namespace YptoTaskManager.BE.IBusiness.Dtos;
+﻿using YptoTaskManager.BE.Domain.Enums;
+
+namespace YptoTaskManager.BE.IBusiness.Dtos;
 
 public record LoginResponse(
     string Token,
@@ -6,4 +8,5 @@ public record LoginResponse(
     string FirstName,
     string LastName,
     string Email,
-    string PhoneNumber);
+    string PhoneNumber,
+    UserRole Role);

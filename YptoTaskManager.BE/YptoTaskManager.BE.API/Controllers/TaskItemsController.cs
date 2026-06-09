@@ -4,6 +4,7 @@ using System.Security.Claims;
 using YptoTaskManager.BE.API.Dtos.Tasks;
 using YptoTaskManager.BE.API.Extensions;
 using YptoTaskManager.BE.Domain.Entities;
+using YptoTaskManager.BE.Domain.Enums;
 using YptoTaskManager.BE.IBusiness;
 
 namespace YptoTaskManager.BE.API.Controllers;
@@ -41,9 +42,11 @@ public class TaskItemsController : ControllerBase
             return Unauthorized();
         }
 
-        var tasks = await _taskItemService.GetAllForUserAsync(
-            userId,
-            cancellationToken);
+        var tasks = await (User.IsInRole(nameof(UserRole.Admin))
+            ? _taskItemService.GetAllAsync(cancellationToken)
+            : _taskItemService.GetAllForUserAsync(
+                userId,
+                cancellationToken));
 
         return Ok(tasks.Select(t => t.ToDto()).ToList());
     }

@@ -1,4 +1,6 @@
-﻿namespace YptoTaskManager.FE.Web.Dtos.Auth;
+﻿using YptoTaskManager.FE.Web.Dtos.Enums;
+
+namespace YptoTaskManager.FE.Web.Dtos.Auth;
 
 public record LoginResponse(
     string Token,
@@ -6,5 +8,6 @@ public record LoginResponse(
     string FirstName,
     string LastName,
     string Email,
-    string PhoneNumber);
+    string PhoneNumber,
+    UserRole Role);
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using YptoTaskManager.BE.Domain.Entities;
+using YptoTaskManager.BE.Domain.Enums;
 
 namespace YptoTaskManager.BE.Data.Maps
 {
@@ -18,6 +19,10 @@ namespace YptoTaskManager.BE.Data.Maps
             builder.Property(x => x.PhoneNumber).HasMaxLength(50).IsRequired();
             builder.Property(x => x.PasswordSalt).IsRequired();
             builder.Property(x => x.PasswordHash).HasMaxLength(512).IsRequired();
+            builder.Property(x => x.Role)
+                .HasConversion<int>()
+                .HasDefaultValue(UserRole.User)
+                .IsRequired();
 
             builder.HasIndex(x => x.Email).IsUnique();
 

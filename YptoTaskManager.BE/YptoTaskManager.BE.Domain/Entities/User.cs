@@ -1,4 +1,5 @@
 ﻿using YptoTaskManager.BE.Domain.Entities.Interfaces;
+using YptoTaskManager.BE.Domain.Enums;
 
 namespace YptoTaskManager.BE.Domain.Entities;
 
@@ -11,6 +12,7 @@ public class User : IEntity<Guid>
     public required string PhoneNumber { get; set; }
     public Guid PasswordSalt { get; set; } = Guid.NewGuid();
     public required string PasswordHash { get; set; }
+    public UserRole Role { get; set; } = UserRole.User;
     public ICollection<TaskItem> CreatedTasks { get; set; } = [];
     public ICollection<TaskItem> AssignedTasks { get; set; } = [];
 }
